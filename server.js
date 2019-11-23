@@ -22,8 +22,18 @@ var server = http.createServer(function(request, response){
   console.log('有个傻子发请求过来啦！路径（带查询参数）为：' + pathWithQuery)
 
     response.statusCode = 200
-    response.setHeader('Content-Type', 'text/html;charset=utf-8')
     const filePath = path === '/' ? '/index.html': path // 默认首页
+    const index = filePath.lastIndexOf('.')
+    const suffix = filePath.slice(index)
+    // 这里用了一个哈希来代替if...else
+    const fileTypes = {
+      '.html':'text/html',
+      '.css':'text/css',
+      '.js':'text/javascript',
+      '.png':'image/png',
+      '.jpg':'image/jpeg'
+    }
+    response.setHeader('Content-Type', `${fileTypes[suffix] || 'text/html'};charset=utf-8`)
     let content
     // 解决请求路径不存在时会导致服务崩溃的bug
     try{
