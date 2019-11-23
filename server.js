@@ -23,8 +23,16 @@ var server = http.createServer(function(request, response){
 
     response.statusCode = 200
     response.setHeader('Content-Type', 'text/html;charset=utf-8')
-    const filePath = path
-    response.write(fs.readFileSync(`./public/${filePath}`))
+    const filePath = path === '/' ? '/index.html': path // 默认首页
+    let content
+    // 解决请求路径不存在时会导致服务崩溃的bug
+    try{
+      content = fs.readFileSync(`./public${filePath}`)
+    }catch(error){
+      content = '文件不存在'
+      response.statusCode = 404
+    }
+    response.write(content)
     response.end()
 
   /******** 代码结束，下面不要看 ************/
